@@ -1,13 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import SwiperCore from 'swiper'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css/bundle'
 import { Link } from 'react-router-dom'
+import ListingItems from '../Components/ListingItems'
 
 export default function Home() {
 
   SwiperCore.use([Navigation, Autoplay])
+
+  const [offerListings, setOfferListings] = useState([]);
+  const [sellListings, setSellListings] = useState([]);
+  const [rentListings, setRentListings] = useState([]);
+
+  useEffect(() => {
+
+    const fetchOfferListings = async () => {
+      try {
+
+        const res = await fetch(`/api/listing/get?type=all&offer=true&limit=4`);
+        const data = await res.json();
+
+        setOfferListings(data)
+        fetchRentListings();
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const fetchRentListings = async () => {
+      try {
+
+        const res = await fetch(`/api/listing/get?type=rent&limit=4`);
+        const data = await res.json();
+
+        setRentListings(data)
+        fetchSellListings();
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const fetchSellListings = async () => {
+      try {
+
+        const res = await fetch(`/api/listing/get?type=sell&limit=4`);
+        const data = await res.json();
+
+        setSellListings(data)
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchOfferListings();
+  })
 
   return (
     <div>
@@ -25,15 +76,17 @@ export default function Home() {
         <Swiper navigation autoplay={{ delay: 3000, pauseOnMouseEnter: true }}>
 
 
-          <SwiperSlide>
-            <div className="h-[500px]"
-              style={{ background: `url("https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg") center no-repeat`, backgroundSize: 'cover' }}></div>
-          </SwiperSlide>
+          {
+            offerListings && offerListings.length > 0 && offerListings.map((listing) => (
+              <SwiperSlide>
 
-          <SwiperSlide>
-            <div className="h-[500px]"
-              style={{ background: `url("https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D") center no-repeat`, backgroundSize: 'cover' }}></div>
-          </SwiperSlide>
+                <div className="h-[500px]"
+                  style={{ background: `url(${listing.imageUrls[0]}) center no-repeat`, backgroundSize: 'cover' }}>
+                </div>
+
+              </SwiperSlide>
+            ))
+          }
 
 
         </Swiper>
@@ -41,347 +94,71 @@ export default function Home() {
 
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10'>
 
-        <div>
+        {offerListings && offerListings.length > 0 && (
 
           <div className='my-5'>
             <div className='my-3 pt-5'>
-              <h3 className=' text-2xl font-semibold text-slate-600'>Recent offers</h3>
-              <Link to="/"><p className='text-sm text-blue-800 hover:underline'>Show more offers</p></Link>
+              <h3 className='text-2xl font-semibold text-slate-600'>Recent offers</h3>
+
+              <Link to={"search?offer=true"} className='text-sm text-blue-800 hover:underline'>
+                Show more offers
+              </Link>
+
             </div>
 
-            {/* ul */}
             <div className='flex flex-wrap gap-4'>
-
-              {/* li */}
-              <div className=' bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-fu<ll sm:w-[330px] border'>
-
-
-                {/* <a className='contents' href="#"></a> */}
-                <Link to="/">
-                  <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                  <div className='w-full p-3 gap-2 flex flex-col'>
-                    <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                    <p className='text-xs  text-gray-600 truncate'>surat</p>
-                    <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                    <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                    <div className='flex items-center gap-4 text-slate-700'>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bed</p>
-                      </div>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bath</p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-
-              </div>
-              {/* li */}
-
-              {/* delete from here */}
-
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-
+              {offerListings.map((listing) => (
+                <ListingItems listing={listing} key={listing._id}></ListingItems>
+              ))}
             </div>
-            {/* ul */}
-
           </div>
 
+        )}
+
+        {rentListings && rentListings.length > 0 && (
+
           <div className='my-5'>
             <div className='my-3 pt-5'>
-              <h3 className=' text-2xl font-semibold text-slate-600'>Recent places for rent</h3>
-              <Link to="/"><p className='text-sm text-blue-800 hover:underline'>Show more places for rent</p></Link>
+              <h3 className='text-2xl font-semibold text-slate-600'>Recent places for rent</h3>
+
+              <Link to={"search?type=rent"} className='text-sm text-blue-800 hover:underline'>
+                Show more offers
+              </Link>
+
             </div>
 
-            {/* ul */}
             <div className='flex flex-wrap gap-4'>
-
-              {/* li */}
-              <div className=' bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-fu<ll sm:w-[330px] border'>
-
-
-                {/* <a className='contents' href="#"></a> */}
-                <Link to="/">
-                  <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                  <div className='w-full p-3 gap-2 flex flex-col'>
-                    <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                    <p className='text-xs  text-gray-600 truncate'>surat</p>
-                    <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                    <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                    <div className='flex items-center gap-4 text-slate-700'>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bed</p>
-                      </div>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bath</p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-
-              </div>
-              {/* li */}
-
-              {/* delete from here */}
-
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-
+              {rentListings.map((listing) => (
+                <ListingItems listing={listing} key={listing._id}></ListingItems>
+              ))}
             </div>
-            {/* ul */}
-
           </div>
 
+        )}
+
+        {sellListings && sellListings.length > 0 && (
+
           <div className='my-5'>
             <div className='my-3 pt-5'>
-              <h3 className=' text-2xl font-semibold text-slate-600'>Recent places for sale</h3>
-              <Link to="/"><p className='text-sm text-blue-800 hover:underline'>Show more places for sale</p></Link>
+              <h3 className='text-2xl font-semibold text-slate-600'>Recent places for sell</h3>
+
+              <Link to={"search?type=sell"} className='text-sm text-blue-800 hover:underline'>
+                Show more offers
+              </Link>
+
             </div>
 
-            {/* ul */}
             <div className='flex flex-wrap gap-4'>
-
-              {/* li */}
-              <div className=' bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-fu<ll sm:w-[330px] border'>
-
-
-                {/* <a className='contents' href="#"></a> */}
-                <Link to="/">
-                  <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                  <div className='w-full p-3 gap-2 flex flex-col'>
-                    <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                    <p className='text-xs  text-gray-600 truncate'>surat</p>
-                    <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                    <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                    <div className='flex items-center gap-4 text-slate-700'>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bed</p>
-                      </div>
-                      <div className='flex items-center gap-1'>
-                        <p className='font-bold text-xs'>1 Bath</p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-
-              </div>
-              {/* li */}
-
-              {/* delete from here */}
-
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
-
-                <a className='contents' href="#"></a>
-                <img className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" src="https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMDY1OTc2fHxlbnwwfHx8fHw%3D" alt="estate-img" />
-
-                <div className='w-full p-3 gap-2 flex flex-col'>
-                  <p className='font-semibold m-0 text-lg truncate text-slate-700'>dnscjkdscndx</p>
-                  <p className='text-xs  text-gray-600 truncate'>surat</p>
-                  <p className='text-xs text-gray-600 line-clamp-2'>ioACNHBIasd</p>
-                  <p className='text-slate-500 mt-2 font-semibold'>$50 / month</p>
-
-                  <div className='flex items-center gap-4 text-slate-700'>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bed</p>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <p className='font-bold text-xs'>1 Bath</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-
+              {sellListings.map((listing) => (
+                <ListingItems listing={listing} key={listing._id}></ListingItems>
+              ))}
             </div>
-            {/* ul */}
+          </div>
 
+        )}
+
+      
           </div>
         </div>
-
-      </div>
-
-    </div>
   )
 }

@@ -18,8 +18,9 @@ export default function Search() {
 
     const [listing, setListing] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [showMore, setShowMore] = useState(false)
 
-    console.log("listing", listing);
+    // console.log("listing", listing);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search)
@@ -49,10 +50,17 @@ export default function Search() {
 
         const FetchListing = async () => {
             setLoading(true);
+            setShowMore(false)
 
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`)
             const data = await res.json();
+            // console.log(data.length,"length");
+
+            if(data.length > 8){
+                setShowMore(true);
+                console.log(showMore,"show more");
+            }
 
             setListing(data);
             setLoading(false);
@@ -100,6 +108,24 @@ export default function Search() {
         const searchQuery = urlParams.toString();
 
         navigate(`/search?${searchQuery}`)
+    }
+
+    const onShowMoreClick = async () => {
+        const numberOfListings = listing.length;
+        const startIndex = numberOfListings;
+        const urlParams = new URLSearchParams(location.search);
+
+        urlParams.set('startIndex', startIndex);
+        const newSearchQuery = urlParams.toString();
+
+        const res = await fetch(`/api/listing/get?${newSearchQuery}`);
+        const data = await res.json();
+
+        if(data.length < 9){
+            setShowMore(false);
+        }
+
+        setListing([...listing, ...data]);
     }
 
     return (
@@ -180,6 +206,9 @@ export default function Search() {
                         }
                         <div className='grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
                             {!loading && listing && listing.map((listing) => <ListingItems key={listing._id} listing={listing}></ListingItems>)}
+
+                            
+                            {showMore && (<p className="text-green-700 hover:underline p-3 text-center w-full" onClick={() => {onShowMoreClick();}}>Show More</p>)}
                         </div>
                     </div>
                 </div>
