@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { FaMapMarkerAlt} from 'react-icons/fa'
 
 export default function ListingItems({ listing }) {
-    console.log(listing);
+    // console.log(listing);
     return (
-            <div className=" bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border">
+
+        // bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden transition-shadow w-full sm:w-[330px] border
+            <div className="estate bg-white flex flex-col gap-4 shadow-md hover:shadow-lg rounded-md overflow-hidden w-full transition-shadow border">
 
                 {/* <a className='contents' href="#"></a> */}
                 <Link to={`/listing/${listing._id}`}>

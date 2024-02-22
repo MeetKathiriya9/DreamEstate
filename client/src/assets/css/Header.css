@@ -28,3 +28,6 @@ header .nav-link:hover::after{
     transform-origin: left;
 }
 
+.navbar_mb{
+    margin-bottom: 50px;
+}

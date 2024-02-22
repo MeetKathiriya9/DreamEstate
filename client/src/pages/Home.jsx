@@ -16,49 +16,72 @@ export default function Home() {
 
   useEffect(() => {
 
+    // const fetchOfferListings = async () => {
+    //   try {
+
+    //     const res = await fetch(`/api/listing/get?offer=true&limit=4`); 
+    //     const data = await res.json();
+
+    //     setOfferListings(data)
+    //     fetchRentListings();
+
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
     const fetchOfferListings = async () => {
       try {
-
-        const res = await fetch(`/api/listing/get?type=all&offer=true&limit=4`);
+        const res = await fetch(`/api/listing/get?offer=true&limit=4`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch offer listings');
+        }
         const data = await res.json();
 
-        setOfferListings(data)
+        setOfferListings(data);
         fetchRentListings();
 
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
+    
 
     const fetchRentListings = async () => {
       try {
 
-        const res = await fetch(`/api/listing/get?type=rent&limit=4`);
-        const data = await res.json();
+        const res2 = await fetch(`/api/listing/get?type=rent&limit=4`);
+        if (!res2.ok) {
+          throw new Error('Failed to fetch offer listings');
+        }
+        const data = await res2.json();
 
         setRentListings(data)
         fetchSellListings();
 
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
     const fetchSellListings = async () => {
       try {
 
-        const res = await fetch(`/api/listing/get?type=sell&limit=4`);
-        const data = await res.json();
+        const res3 = await fetch(`/api/listing/get?type=sell&limit=4`);
+        if (!res3.ok) {
+          throw new Error('Failed to fetch offer listings');
+        }
+        const data = await res3.json();
 
         setSellListings(data)
 
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
-    fetchOfferListings();
-  })
+    fetchOfferListings();  
+
+  },[])
 
   return (
     <div>
@@ -72,7 +95,7 @@ export default function Home() {
         </Link>
       </section>
 
-      <div>
+      <div className=' z-10'>
         <Swiper navigation autoplay={{ delay: 3000, pauseOnMouseEnter: true }}>
 
 
@@ -106,7 +129,7 @@ export default function Home() {
 
             </div>
 
-            <div className='flex flex-wrap gap-4'>
+            <div className=' flex-wrap grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
               {offerListings.map((listing) => (
                 <ListingItems listing={listing} key={listing._id}></ListingItems>
               ))}
@@ -127,7 +150,7 @@ export default function Home() {
 
             </div>
 
-            <div className='flex flex-wrap gap-4'>
+            <div className=' flex-wrap grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
               {rentListings.map((listing) => (
                 <ListingItems listing={listing} key={listing._id}></ListingItems>
               ))}
@@ -148,7 +171,7 @@ export default function Home() {
 
             </div>
 
-            <div className='flex flex-wrap gap-4'>
+            <div className='flex-wrap grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
               {sellListings.map((listing) => (
                 <ListingItems listing={listing} key={listing._id}></ListingItems>
               ))}

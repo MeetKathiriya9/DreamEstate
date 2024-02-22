@@ -130,8 +130,8 @@ export default function Search() {
 
     return (
         <div>
-            <div className='flex flex-col md:flex-row'>
-                <div className='bg-transparent border-b-2 sm:border-r-2 p-7 h-auto md:min-h-screen flex-2'>
+            <div className='flex flex-col lg:flex-row '>
+                <div className='bg-transparent border-b-2 sm:border-r-2 p-7 lg:h-auto lg:min-h-screen flex-2'>
                     <form className='flex flex-col gap-8' onSubmit={SubmitHandler}>
                         <div className='flex items-center gap-2'>
                             <label className='whitespace-nowrap'>Search Term:</label>
@@ -195,7 +195,7 @@ export default function Search() {
                 <div className='flex-1'>
                     <h1 className="text-3xl m-5 font-semibold border-b p-3 text-slate-700">Listing results:</h1>
 
-                    <div className='p-7 flex gap-4'>
+                    <div className='p-7 '>
                         {!loading && listing.length === 0 && (
                             <p className='text-xl text-slate-700'>No Listing Found !</p>
                         )}
@@ -204,15 +204,15 @@ export default function Search() {
                                 <p className='text-xl text-slate-700 text-center w-full'>Loading...</p>
                             )
                         }
+                        
                         <div className='grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
                             {!loading && listing && listing.map((listing) => <ListingItems key={listing._id} listing={listing}></ListingItems>)}
-
                             
                             {showMore && (<p className="text-green-700 hover:underline p-3 text-center w-full" onClick={() => {onShowMoreClick();}}>Show More</p>)}
                         </div>
                     </div>
                 </div>
-
+                {/* md:grid-cols-2 xl:grid-cols-3  */}
             </div>
 
 
