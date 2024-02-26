@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import Userrouter from './Router/user.js';
 import cookieParser from 'cookie-parser';
 import Listingrouter from './Router/ListingRoute.js';
+import path from 'path';
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ mongoose.connect(process.env.DB_URL).then(()=>{
 }).catch((err)=>{
     console.log(err);
 })
+
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -24,6 +27,12 @@ app.use(express.json())
 app.use("/api/auth",router)
 app.use("/api/user",Userrouter)
 app.use("/api/listing",Listingrouter)
+
+app.use(express.static(path.join(__dirname, '/client/disk')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "disk", "index.html"));
+})
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
