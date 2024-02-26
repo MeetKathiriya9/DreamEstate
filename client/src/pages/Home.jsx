@@ -16,19 +16,6 @@ export default function Home() {
 
   useEffect(() => {
 
-    // const fetchOfferListings = async () => {
-    //   try {
-
-    //     const res = await fetch(`/api/listing/get?offer=true&limit=4`); 
-    //     const data = await res.json();
-
-    //     setOfferListings(data)
-    //     fetchRentListings();
-
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
     const fetchOfferListings = async () => {
       try {
         const res = await fetch(`/api/listing/get?offer=true&limit=4`);
@@ -45,7 +32,6 @@ export default function Home() {
       }
     }
     
-
     const fetchRentListings = async () => {
       try {
 
@@ -97,8 +83,6 @@ export default function Home() {
 
       <div className=' z-10'>
         <Swiper navigation autoplay={{ delay: 3000, pauseOnMouseEnter: true }}>
-
-
           {
             offerListings && offerListings.length > 0 && offerListings.map((listing) => (
               <SwiperSlide>
@@ -110,8 +94,6 @@ export default function Home() {
               </SwiperSlide>
             ))
           }
-
-
         </Swiper>
       </div>
 
