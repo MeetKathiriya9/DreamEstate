@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import Userrouter from './Router/user.js';
 import cookieParser from 'cookie-parser';
 import Listingrouter from './Router/ListingRoute.js';
-
+ 
 dotenv.config();
 
 mongoose.connect(process.env.DB_URL).then(()=>{
