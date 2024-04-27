@@ -46,6 +46,6 @@ app.use((err,req,res,next)=>{
     })
 })
 
-app.listen(5000,() => {
-    console.log('5000 is running')
+app.listen(3000,() => {
+    console.log('3000 is running')
 })
