@@ -16,7 +16,7 @@ export default function Googleauth() {
             const auth = getAuth(app);
 
             const resultdata = await signInWithPopup(auth, provider)
-            // console.log(resultdata);
+            console.log(resultdata,"result data");
 
             const res =await fetch("/api/auth/google",{
                 method: "POST",
@@ -28,7 +28,17 @@ export default function Googleauth() {
                     email : resultdata.user.email,
                     photo : resultdata.user.photoURL
                 })
+                
             })
+                
+            
+
+            console.log("Response status:", res.status);
+        // const text = await res.text();
+        // console.log("Response text:", text);
+
+        // const data = JSON.parse(text); // Parsing JSON response
+        // console.log("Parsed data:", data);
 
             const data = await res.json();
             console.log(data);
